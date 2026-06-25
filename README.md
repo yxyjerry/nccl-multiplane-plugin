@@ -1,6 +1,6 @@
 # 1. 编译插件 (Compile)
 
-\# 指定一个构建目录（例如 /tmp/nccl-dpfr-plugin），编译出来的 .so 会放在那里
+指定一个构建目录（例如 /tmp/nccl-dpfr-plugin），编译出来的 .so 会放在那里
 
 make -C plugins/net/dpfr_ib BUILDDIR=/tmp/nccl-dpfr-plugin
 
@@ -11,19 +11,26 @@ make -C plugins/net/dpfr_ib BUILDDIR=/tmp/nccl-dpfr-plugin
 
 在使用 mpirun 或 torchrun 运行你的测试或模型时，务必带上以下环境变量：
 
-\# 1. 告诉系统去哪里加载插件（刚刚编译输出的目录）
+1. 告诉系统去哪里加载插件（刚刚编译输出的目录）
+
 export LD_LIBRARY_PATH=/tmp/nccl-dpfr-plugin:$LD_LIBRARY_PATH
 
-\# 2. 强制 NCCL 使用这个 DPFR_IB 插件
+2. 强制 NCCL 使用这个 DPFR_IB 插件
+
 export NCCL_NET_PLUGIN=dpfr_ib
+
 export NCCL_NET=DPFR_IB
 
-\# 3. 【必填】配置你的容错平面映射（Plane 列表）
-\# 格式：网卡名:端口号:PlaneID
-\# 下面表示：mlx5_0 端口 1 映射为 Plane 0，mlx5_1 端口 1 映射为 Plane 1
+3. 【必填】配置你的容错平面映射（Plane 列表）
+
+格式：网卡名:端口号:PlaneID
+
+下面表示：mlx5_0 端口 1 映射为 Plane 0，mlx5_1 端口 1 映射为 Plane 1
+
 export NCCL_DPFR_IB_HCA_LIST=mlx5_0:1:0,mlx5_1:1:1
 
-\# 4. （可选）开启日志，方便观察插件是否挂载成功
+ 4. （可选）开启日志，方便观察插件是否挂载成功
+
 export NCCL_DEBUG=INFO
 
 
