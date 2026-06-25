@@ -1,10 +1,12 @@
+# 1. 编译插件 (Compile)
+
 \# 指定一个构建目录（例如 /tmp/nccl-dpfr-plugin），编译出来的 .so 会放在那里
 
 make -C plugins/net/dpfr_ib BUILDDIR=/tmp/nccl-dpfr-plugin
 
 编译成功后，您会在 /tmp/nccl-dpfr-plugin 目录下看到生成的 libnccl-net-dpfr_ib.so 或 libnccl-net.so 文件。
 
-#2. 运行配置 (Run)
+# 2. 运行配置 (Run)
 这个插件与普通的 NCCL 插件不同，它内部管理了多个 IB 端口作为“容错平面 (Plane)”，所以必须要配置 NCCL_DPFR_IB_HCA_LIST 环境变量告诉插件要使用哪些网卡和端口。
 
 在使用 mpirun 或 torchrun 运行你的测试或模型时，务必带上以下环境变量：
@@ -25,7 +27,7 @@ export NCCL_DPFR_IB_HCA_LIST=mlx5_0:1:0,mlx5_1:1:1
 export NCCL_DEBUG=INFO
 
 
-#3. 使用 mpirun 测试的完整示例命令
+# 3. 使用 mpirun 测试的完整示例命令
 如果您用 nccl-tests 来测试（假设已经在 /path/to/nccl-tests 编译好），可以直接一条命令拉起：
 
 mpirun -np 8 
