@@ -8,7 +8,7 @@ make -C plugins/net/dpfr_ib BUILDDIR=/tmp/nccl-dpfr-plugin
 
 在使用 mpirun 或 torchrun 运行你的测试或模型时，务必带上以下环境变量：
 
-
+bash
 # 1. 告诉系统去哪里加载插件（刚刚编译输出的目录）
 export LD_LIBRARY_PATH=/tmp/nccl-dpfr-plugin:$LD_LIBRARY_PATH
 # 2. 强制 NCCL 使用这个 DPFR_IB 插件
