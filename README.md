@@ -40,3 +40,19 @@ mpirun -np 8
   -x NCCL_DEBUG=INFO \
   /path/to/nccl-tests/build/all_reduce_perf -b 8 -e 128M -f 2 -g 1
 运行成功的标志： 看终端输出。只要看到类似 [node1] NET/Plugin : Plugin load (DPFR_IB) success，或者 DPFR_IB initialized commId=... planes=... 的日志，就说明插件已经正常编译并挂载成功，代码正在工作！
+
+## ICMP 探测 (可选功能)
+
+为了实现更快速的故障发现（例如：网线被拔掉、网络闪断等），您可以为每个 Plane（容错平面）配置目标 IP 和物理网络接口，以启用后台的主动 ICMP 探测（Ping）。
+
+* `NCCL_DPFR_IB_PLANE<id>_PROBE_IP`: 要 Ping 的目标 IP 地址（通常配置为交换机网关 IP 或对端节点的 IP）。
+* `NCCL_DPFR_IB_PLANE<id>_PROBE_IFACE`: 用于发送 Ping 探测包的物理网卡接口（例如 `eth0`）。这一项**非常重要**：插件在底层利用了 `SO_BINDTODEVICE` 机制来绕过系统的常规路由表，强制这些 ICMP 探测包必须从该 Plane 绑定的确切物理网口发出去。
+
+**配置示例：**
+```bash
+# 将 mlx5_0 的端口 1 映射为 Plane 0
+export NCCL_DPFR_IB_HCA_LIST=mlx5_0:1:0
+
+# 开启针对 Plane 0 的 ICMP 探测：强制从 eth0 发送，目标为 10.0.0.2
+export NCCL_DPFR_IB_PLANE0_PROBE_IP=10.0.0.2
+export NCCL_DPFR_IB_PLANE0_PROBE_IFACE=eth0
